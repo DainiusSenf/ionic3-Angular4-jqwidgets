@@ -1,0 +1,277 @@
+<ion-grid class="hideOnPhone">
+  <ion-row style="width: 25%">
+    <ion-col>
+        <label>Currency</label>
+        <angular2-multiselect [data]="filterService.filterValues.currencyList"
+                              [(ngModel)]="filterService.filterValues.selectedCurrency"
+                              [settings]="filterSettings.settingsCurrency">
+        </angular2-multiselect>
+      </ion-col>
+  </ion-row>
+  <ion-row #mainRow>
+    <ion-col>
+      <div (blur)="onBlur()" tabindex="1">
+        <label>Status</label>
+        <angular2-multiselect [data]="filterService.filterValues.statusesList"
+                              [(ngModel)]="filterService.filterValues.selectedStatuses"
+                              [settings]="filterSettings.settingsStatuses"
+                              (onSelect)="onFilterChanged($event)"
+                              (onDeSelect)="onFilterChanged($event)"
+                              (onSelectAll)="onFilterChanged($event)"
+                              (onDeSelectAll)="onFilterChanged($event)">
+          <c-item>
+            <ng-template let-item="item">
+              <label>{{item.itemName}}</label>
+              <span style="float: right">({{item.itemCount}})</span>
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div (blur)="onBlur()" tabindex="1">
+        <label>Country</label>
+        <angular2-multiselect [data]="filterService.filterValues.countriesList"
+                              [(ngModel)]="filterService.filterValues.selectedCountries"
+                              [settings]="filterSettings.settingsCountries"
+                              (onSelect)="onFilterChanged()"
+                              (onDeSelect)="onFilterChanged()"
+                              (onSelectAll)="onFilterChanged()"
+                              (onDeSelectAll)="onFilterChanged()">
+          <c-item>
+            <ng-template let-item="item">
+            <label>{{item.itemName}}</label>
+            <span style="float: right">({{item.itemCount}})</span>
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div (blur)="onBlur()" tabindex="1">
+        <label>Claim Type</label>
+        <angular2-multiselect [data]="filterService.filterValues.claimTypesList"
+                              [(ngModel)]="filterService.filterValues.selectedClaimTypes"
+                              [settings]="filterSettings.settingsClaimTypes"
+                              (onSelect)="onFilterChanged()"
+                              (onDeSelect)="onFilterChanged()"
+                              (onSelectAll)="onFilterChanged()"
+                              (onDeSelectAll)="onFilterChanged()">
+          <c-item>
+            <ng-template let-item="item">
+              <label>{{item.itemName}}</label>
+              <span style="float: right">({{item.itemCount}})</span>
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div (blur)="onBlur()" tabindex="1">
+        <label>Beneficial Owner</label>
+        <angular2-multiselect [data]="filterService.filterValues.beneficialOwnersList"
+                              [(ngModel)]="filterService.filterValues.selectedBeneficialOwners"
+                              [settings]="filterSettings.settingsBeneficialOwners"
+                              (onSelect)="onFilterChanged()"
+                              (onDeSelect)="onFilterChanged()"
+                              (onSelectAll)="onFilterChanged()"
+                              (onDeSelectAll)="onFilterChanged()">
+          <c-item>
+            <ng-template let-item="item">
+              <label>{{item.itemName}}</label>
+              <span style="float: right">({{item.itemCount}})</span>
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+      </div>
+    </ion-col>
+  </ion-row>
+  <div *ngIf="showExpandedSearch" [@mapAnim]>
+    <ion-row >
+      <ion-col>
+        <div (blur)="onBlur()" tabindex="1">
+          <label>Portfolio</label>
+          <angular2-multiselect [data]="filterService.filterValues.portfolioList"
+                                [(ngModel)]="filterService.filterValues.selectedPortfolios"
+                                [settings]="filterSettings.settingsPortfolios"
+                                (onSelect)="onFilterChanged()"
+                                (onDeSelect)="onFilterChanged()"
+                                (onSelectAll)="onFilterChanged()"
+                                (onDeSelectAll)="onFilterChanged()">
+            <c-item>
+              <ng-template let-item="item">
+                <label>{{item.itemName}}</label>
+                <span style="float: right">({{item.itemCount}})</span>
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>
+      </ion-col>
+      <ion-col>
+          <label>Dividend Payment Date</label>
+          <button ion-item (click)="presentDatePicker(filterService.filterValues.divPaymentDateRange,1)">
+            {{filterService.filterValues.divPaymentDateRange.from}} - {{filterService.filterValues.divPaymentDateRange.to}}
+          </button>
+      </ion-col>
+      <ion-col>
+        <label>Claim Submission Date </label>
+        <button ion-item (click)="presentDatePicker(filterService.filterValues.claimSubmissionDateRange,2)">
+          {{filterService.filterValues.claimSubmissionDateRange.from}} - {{filterService.filterValues.claimSubmissionDateRange.to}}
+        </button>
+      </ion-col>
+      <ion-col>
+        <label>Payment Date</label>
+        <button ion-item (click)="presentDatePicker(filterService.filterValues.paymentDateRange,3)">
+          {{filterService.filterValues.paymentDateRange.from}} - {{filterService.filterValues.paymentDateRange.to}}
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row style="width: 25%">
+      <ion-col >
+        <label>Expected Refund Date</label>
+        <button ion-item (click)="presentDatePicker(filterService.filterValues.paymentDateRange,4)">
+          {{filterService.filterValues.expectedRefundDateRange.from}} - {{filterService.filterValues.expectedRefundDateRange.to}}
+        </button>
+      </ion-col>
+    </ion-row>
+  </div>
+  <div text-center >
+    <button icon-only class="background-white fill-width" (click)="onShowHideExtSearch();">
+      <ion-icon [hidden]="!showExpandedSearch" name="ios-arrow-up"></ion-icon>
+      <ion-icon [hidden]="showExpandedSearch" name="ios-arrow-down"></ion-icon>
+    </button>
+  </div>
+  <div text-center>
+    <ion-row>
+      <ion-col>
+        <button ion-button (click)="clearFilters();">
+          Clear Filter
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="onFilterData();">
+          Filter Data
+        </button>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-grid>
+
+<ion-grid class="showOnPhone">
+  <ion-row>
+    <div tabindex="1" class="fill-width">
+      <angular2-multiselect [data]="filterService.filterValues.currencyList"
+                            [(ngModel)]="filterService.filterValues.selectedCurrency"
+                            [settings]="filterSettings.settingsCurrency"
+                            (onSelect)="onItemSelect($event)"
+                            (onDeSelect)="OnItemDeSelect($event)"
+                            (onSelectAll)="onSelectAll($event)"
+                            (onDeSelectAll)="onDeSelectAll($event)">
+      </angular2-multiselect>
+    </div>
+  </ion-row>
+  <div *ngIf="showFiltersMobile">
+    <ion-row>
+        <div (blur)="onBlur()" tabindex="1" class="fill-width">
+          <angular2-multiselect [data]="filterService.filterValues.statusesList"
+                                [(ngModel)]="filterService.filterValues.selectedStatuses"
+                                [settings]="filterSettings.settingsStatuses"
+                                (onSelect)="onItemSelect($event)"
+                                (onDeSelect)="OnItemDeSelect($event)"
+                                (onSelectAll)="onSelectAll($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)">
+          </angular2-multiselect>
+        </div>
+    </ion-row>
+    <ion-row>
+      <div (blur)="onBlur()" tabindex="1" class="fill-width">
+          <angular2-multiselect [data]="filterService.filterValues.countriesList"
+                                [(ngModel)]="filterService.filterValues.selectedCountries"
+                                [settings]="filterSettings.settingsCountries"
+                                (onSelect)="onItemSelect($event)"
+                                (onDeSelect)="OnItemDeSelect($event)"
+                                (onSelectAll)="onSelectAll($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)">
+          </angular2-multiselect>
+        </div>
+    </ion-row>
+    <ion-row>
+      <div (blur)="onBlur()" tabindex="1" class="fill-width">
+        <angular2-multiselect [data]="filterService.filterValues.claimTypesList"
+                              [(ngModel)]="filterService.filterValues.selectedClaimTypes"
+                              [settings]="filterSettings.settingsClaimTypes"
+                              (onSelect)="onItemSelect($event)"
+                              (onDeSelect)="OnItemDeSelect($event)"
+                              (onSelectAll)="onSelectAll($event)"
+                              (onDeSelectAll)="onDeSelectAll($event)">
+        </angular2-multiselect>
+      </div>
+    </ion-row>
+    <ion-row>
+      <div (blur)="onBlur()" tabindex="1" class="fill-width">
+        <angular2-multiselect [data]="filterService.filterValues.beneficialOwnersList"
+                              [(ngModel)]="filterService.filterValues.selectedBeneficialOwners"
+                              [settings]="filterSettings.settingsBeneficialOwners"
+                              (onSelect)="onItemSelect($event)"
+                              (onDeSelect)="OnItemDeSelect($event)"
+                              (onSelectAll)="onSelectAll($event)"
+                              (onDeSelectAll)="onDeSelectAll($event)">
+        </angular2-multiselect>
+      </div>
+    </ion-row>
+    <div *ngIf="showExpandedSearch" [@mapAnim]>
+      <ion-row>
+          <div (blur)="onBlur()" tabindex="1" class="fill-width">
+          <angular2-multiselect [data]="filterService.filterValues.portfolioList"
+                                [(ngModel)]="filterService.filterValues.selectedPortfolios"
+                                [settings]="filterSettings.settingsPortfolios"
+                                (onSelect)="onItemSelect($event)"
+                                (onDeSelect)="OnItemDeSelect($event)"
+                                (onSelectAll)="onSelectAll($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)">
+            <c-item>
+              <ng-template let-item="item">
+                <label>{{item.itemName}}</label>
+                <span style="float: right">({{item.itemCount}})</span>
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+          </div>
+      </ion-row>
+      <ion-row>
+        <div (blur)="onBlur()" tabindex="1" class="fill-width">
+            <button ion-item (click)="presentDatePicker(filterService.filterValues.divPaymentDateRange,1)">
+              {{filterService.filterValues.divPaymentDateRange.from}} - {{filterService.filterValues.divPaymentDateRange.to}}
+            </button>
+          </div>
+      </ion-row>
+      <ion-row>
+          <div tabindex="1" class="fill-width">
+            <button ion-item (click)="presentDatePicker(filterService.filterValues.claimSubmissionDateRange,2)">
+              {{filterService.filterValues.claimSubmissionDateRange.from}} - {{filterService.filterValues.claimSubmissionDateRange.to}}
+            </button>
+          </div>
+      </ion-row>
+      <ion-row>
+        <div tabindex="1" class="fill-width">
+          <button ion-item (click)="presentDatePicker(filterService.filterValues.paymentDateRange,3)">
+            {{filterService.filterValues.paymentDateRange.from}} - {{filterService.filterValues.paymentDateRange.to}}
+          </button>
+        </div>
+      </ion-row>
+      <ion-row>
+        <div tabindex="1" class="fill-width">
+          <button ion-item (click)="presentDatePicker(filterService.filterValues.paymentDateRange,4)">
+            {{filterService.filterValues.expectedRefundDateRange.from}} - {{filterService.filterValues.expectedRefundDateRange.to}}
+          </button>
+        </div>
+      </ion-row>
+    </div>
+    <div text-center >
+      <button icon-only class="background-white fill-width" (click)="onShowHideExtSearch();">
+        <ion-icon [hidden]="!showExpandedSearch" name="ios-arrow-up"></ion-icon>
+        <ion-icon [hidden]="showExpandedSearch" name="ios-arrow-down"></ion-icon>
+      </button>
+    </div>
+  </div>
+</ion-grid>

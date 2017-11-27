@@ -1,0 +1,23 @@
+<ion-grid class="background-white">
+  <ion-row text-center>
+    <ion-col>
+      <button ion-button class="fill-width" (click)="onSave()">
+        Save
+      </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button class="fill-width" (click)="dismiss()">
+        Cancel
+      </button>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-calendar [(ngModel)]="dateRange"
+                  [options]="optionsRange"
+                  [type]="type"
+                  [format]="'YYYY-MM-DD'">
+    </ion-calendar>
+  </ion-row>
+</ion-grid>
+
+

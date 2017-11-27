@@ -1,0 +1,10 @@
+{
+  "name": "myNewProject",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "gulp": {
+      "enabled": false
+    }
+  }
+}

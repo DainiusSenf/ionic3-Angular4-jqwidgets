@@ -1,0 +1,20 @@
+
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end class="showOnPhone">
+      <button ion-button icon-only (click)="openMobileFilters();">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <app-filter [parentComponent]="HOME"></app-filter>
+  <app-status-table></app-status-table>
+  <app-country-table></app-country-table>
+</ion-content>
