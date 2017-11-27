@@ -11,7 +11,7 @@ import {CountryTableComponent} from "../../components/country-table/country-tabl
 })
 export class HomePage {
   @ViewChild(FilterComponent) filterComp: FilterComponent;
-  @ViewChild(StatusTableComponent) statusTableComp: StatusTableComponent;
+  // @ViewChild(StatusTableComponent) statusTableComp: StatusTableComponent;
   @ViewChild(CountryTableComponent) countryTableComp: CountryTableComponent;
   private HOME = 'home';
 
@@ -24,13 +24,12 @@ export class HomePage {
 
   ionViewWillLeave(){
     console.log('ionViewWillLeave!!!!!');
-    this.statusTableComp.destroyTable();
-    this.countryTableComp.destroyTable();
+    // this.statusTableComp.destroyTable();
   }
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter!!!!!');
-    this.statusTableComp.generateClaimTableData();
+    // this.statusTableComp.generateClaimTableData();
     this.countryTableComp.generateClaimTableData();
   }
 }

@@ -9,7 +9,7 @@ module.exports = function(gulp, config) {
 	});
 
   gulp.task('javascript:prod', () => {
-    return gulp.src(['www/build/**/*'])
+    return gulp.src(['www/build/**/*', '!www/build/**/*.js.map'])
       .pipe(gulp.dest('build/build'));
 });
 

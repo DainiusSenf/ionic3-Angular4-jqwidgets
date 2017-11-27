@@ -1,10 +1,11 @@
-import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {ClaimService} from '../../services/claim.service';
 import {App} from "ionic-angular";
 import {FilterService} from "../../services/filter.service";
 import {ClaimItemsDetailsComponent} from "../../pages/claim-items-details/claim-items-details";
 import {Subscription} from "rxjs/Subscription";
+import {jqxGridComponent} from "../angular_jqxgrid";
 
 declare var FancyGrid: any;
 
@@ -12,14 +13,18 @@ declare var FancyGrid: any;
   selector: 'app-country-table',
   templateUrl: './country-table.component.html'
 })
-export class CountryTableComponent implements OnInit, OnDestroy, AfterViewInit  {
+export class CountryTableComponent implements OnInit {
+    @ViewChild('countryTable') myGrid: jqxGridComponent;
 
   private config;
-  public myGrid;
+  // public myGrid;
   private pieChartConfig: Object;
   private subscription: Subscription;
   private HOME = 'home';
-
+  private tableData;
+  private columns: any[];
+  private dataAdapter: any;
+  private source: any;
 
   constructor(private zone: NgZone,  private claimService: ClaimService,
               public appCtrl: App,private filterService: FilterService) {
@@ -30,39 +35,75 @@ export class CountryTableComponent implements OnInit, OnDestroy, AfterViewInit  
     });
   }
 
-  ngOnInit() { }
+  onRowClick(event){
+      console.log('onRowClick');
+      // console.log(event.args.row.bounddata.country);
+      this.appCtrl.getRootNav().push(ClaimItemsDetailsComponent, {
+          country: event.args.row.bounddata.country
+      });
+  }
+
+  ngOnInit() {
+      this.generateClaimTableData();
+  }
 
   updateClaimTableData(){
     this.claimService.getUserClaimsByCountry().then(res => {
 
-      FancyGrid.get(this.myGrid['renderTo']).destroy();
-      this.config = this.loadGridConfig(res[0].gridData, this.appCtrl, this.filterService);
+      this.updateDataTableData(res[0].gridData);
+        // this.myGrid.setOptions({source:{
+        //     datatype: 'json',
+        //     datafields: [
+        //         { name: 'country', type: 'string' },
+        //         { name: 'claimed', type: 'string' },
+        //         { name: 'paid', type: 'string' }
+        //     ],
+        //     localdata: res[0].gridData
+        // }});
       this.loadPieChart(res[0].pieChartData);
-      this.myGrid = new FancyGrid(this.config);
+
     });
   }
 
   generateClaimTableData(){
     this.claimService.getUserClaimsByCountry().then(res => {
-
-      this.config = this.loadGridConfig(res[0].gridData, this.appCtrl, this.filterService);
       this.loadPieChart(res[0].pieChartData);
-      this.myGrid = new FancyGrid(this.config);
+      this.loadDataTableConfig(res[0].gridData);
     });
   }
 
-
-  ngAfterViewInit() {
-    // this.generateClaimTableData();
+  updateDataTableData(tableData){
+      this.myGrid.setOptions({source:{
+          datatype: 'json',
+          datafields: [
+              { name: 'country', type: 'string' },
+              { name: 'claimed', type: 'string' },
+              { name: 'paid', type: 'string' }
+          ],
+          localdata: tableData
+      }});
   }
 
-  ngOnDestroy() {
-    console.log('ng on destroy');
-    FancyGrid.get(this.myGrid['renderTo']).destroy();
-  }
+  loadDataTableConfig(tableData){
+      this.source =
+          {
+              datatype: 'json',
+              datafields: [
+                  { name: 'country', type: 'string' },
+                  { name: 'claimed', type: 'string' },
+                  { name: 'paid', type: 'string' }
+              ],
+              localdata: tableData
+          };
 
-  destroyTable(){
-    FancyGrid.get('countryTable').destroy();
+      this.dataAdapter = new jqx.dataAdapter(this.source);
+
+      this.columns =
+          [
+              { text: 'Country', datafield: 'country', width: 100 },
+              { text: 'Claimed', datafield: 'claimed', width: 100 },
+              { text: 'Paid', datafield: 'paid', width: 100 }
+          ];
   }
 
   private loadGridConfig(gridData, appCtrl, filterService: FilterService) {
@@ -147,46 +188,4 @@ export class CountryTableComponent implements OnInit, OnDestroy, AfterViewInit  
         }]
       };
   }
-
-  source: any =
-    {
-      datatype: 'xml',
-      datafields: [
-        { name: 'ProductName', type: 'string' },
-        { name: 'QuantityPerUnit', type: 'int' },
-        { name: 'UnitPrice', type: 'float' },
-        { name: 'UnitsInStock', type: 'float' },
-        { name: 'Discontinued', type: 'bool' }
-      ],
-      root: 'Products',
-      record: 'Product',
-      id: 'ProductID',
-      url: '../assets/products.xml'
-    };
-
-  dataAdapter: any = new jqx.dataAdapter(this.source);
-
-  cellsrenderer = (row: number, columnfield: string, value: string | number, defaulthtml: string, columnproperties: any, rowdata: any): string => {
-    if (value < 20) {
-      return `<span style='margin: 4px; float:${columnproperties.cellsalign}; color: #ff0000;'>${value}</span>`;
-    }
-    else {
-      return `<span style='margin: 4px; float:${columnproperties.cellsalign}; color: #008000;'>${value}</span>`;
-    }
-  };
-
-  columns: any[] =
-    [
-      { text: 'Product Name', columngroup: 'ProductDetails', datafield: 'ProductName', width: 250 },
-      { text: 'Quantity per Unit', columngroup: 'ProductDetails', datafield: 'QuantityPerUnit', cellsalign: 'right', align: 'right' },
-      { text: 'Unit Price', columngroup: 'ProductDetails', datafield: 'UnitPrice', align: 'right', cellsalign: 'right', cellsformat: 'c2' },
-      { text: 'Units In Stock', datafield: 'UnitsInStock', cellsalign: 'right', cellsrenderer: this.cellsrenderer, width: 100 },
-      { text: 'Discontinued', columntype: 'checkbox', datafield: 'Discontinued', align: 'center' }
-    ];
-
-  columngroups: any[] =
-    [
-      { text: 'Product Details', align: 'center', name: 'ProductDetails' }
-    ];
-
 }

@@ -3,7 +3,7 @@ jQWidgets v5.4.0 (2017-Oct)
 Copyright (c) 2011-2017 jQWidgets.
 License: https://jqwidgets.com/license/
 */
-
+ // <reference path="jqwidgets.d.ts" />
 import '../../node_modules/jqwidgets-scripts/jqwidgets/jqxcore.js';
 import '../../node_modules/jqwidgets-scripts/jqwidgets/jqxdata.js';
 import '../../node_modules/jqwidgets-scripts/jqwidgets/jqxdata.export.js';
