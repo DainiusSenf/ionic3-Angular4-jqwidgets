@@ -82,13 +82,6 @@ export class FilterValues {
   public expectedRefundDateRange: { from: string; to: string; };
 
   constructor(){
-    this.currencyList = [
-      { "id": 1, "itemName": "GBP" },
-      { "id": 2, "itemName": "EUR" },
-      { "id": 3, "itemName": "ZAR" },
-      { "id": 4, "itemName": "PLN" }
-    ];
-
     this.divPaymentDateRange = {from : '', to : ''};
     this.claimSubmissionDateRange = {from : '', to : ''};
     this.paymentDateRange = {from : '', to : ''};
@@ -98,7 +91,7 @@ export class FilterValues {
 
 export class Filter {
 
-  public currency: string;
+  public currencyCode: string;
   public claimTypes: Array<String>;
   public statuses: Array<String>;
   public countries: Array<String>;
@@ -121,5 +114,6 @@ export class Filter {
     this.countries = [];
     this.beneficialOwners = [];
     this.portfolios = [];
+    this.orderBy = [];
   }
 }

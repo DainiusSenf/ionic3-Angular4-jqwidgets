@@ -1,7 +1,11 @@
 <ion-grid>
   <ion-row>
     <ion-col>
-      <div id='statusTable'></div>
+      <jqxGrid #statusTable
+               [width]="600" [height]="400" [source]="dataAdapter" [columns]="columns"
+               [pageable]="false" [sortable]="true"
+               (onRowclick)="onRowClick($event)">
+      </jqxGrid>
     </ion-col>
     <ion-col>
       <chart id="statusPieChart" [options]="pieChartConfig"></chart>

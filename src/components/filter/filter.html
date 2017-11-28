@@ -4,7 +4,11 @@
         <label>Currency</label>
         <angular2-multiselect [data]="filterService.filterValues.currencyList"
                               [(ngModel)]="filterService.filterValues.selectedCurrency"
-                              [settings]="filterSettings.settingsCurrency">
+                              [settings]="filterSettings.settingsCurrency"
+                              (onSelect)="onFilterChanged($event)"
+                              (onDeSelect)="onFilterChanged($event)"
+                              (onSelectAll)="onFilterChanged($event)"
+                              (onDeSelectAll)="onFilterChanged($event)">
         </angular2-multiselect>
       </ion-col>
   </ion-row>

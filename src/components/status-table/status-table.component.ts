@@ -1,25 +1,26 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ClaimService} from '../../services/claim.service';
 import {ClaimItemsDetailsComponent} from "../../pages/claim-items-details/claim-items-details";
 import {App} from "ionic-angular";
 import {FilterService} from "../../services/filter.service";
 import {Subscription} from "rxjs/Subscription";
-
-declare let FancyGrid: any;
+import {jqxGridComponent} from "../../customTypings/angular_jqxgrid";
 
 @Component({
   selector: 'app-status-table',
   templateUrl: './status-table.component.html'
 })
-export class StatusTableComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StatusTableComponent implements OnInit {
+  @ViewChild('countryTable') myGrid: jqxGridComponent;
 
-  private config;
-  public myGrid;
   private pieChartConfig: Object;
   private subscription: Subscription;
   private HOME = 'home';
+  private columns: any[];
+  private dataAdapter: any;
+  private source: any;
 
-  constructor(private zone: NgZone,  private claimService: ClaimService,
+  constructor(private claimService: ClaimService,
               public appCtrl: App, private filterService: FilterService) {
     this.subscription = this.filterService.getFilterSubjectObs().subscribe(parentComponent => {
       if(parentComponent == this.HOME)
@@ -28,79 +29,61 @@ export class StatusTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.generateClaimTableData();
+  }
+
+  onRowClick(event){
+    this.appCtrl.getRootNav().push(ClaimItemsDetailsComponent, {
+      country: event.args.row.bounddata.country
+    });
   }
 
   generateClaimTableData(){
-    this.claimService.getClaimsByStatus().then(res => {
-      this.config = this.loadGridConfig(res[0].gridData, this.appCtrl, this.filterService);
+    this.claimService.getClaimsByStatus(this.filterService.filter).then(res => {
       this.loadPieChart(res[0].pieChartData);
-      this.myGrid = new FancyGrid(this.config);
+      this.loadDataTableConfig(res[0].gridData);
     });
   }
 
   updateClaimTableData(){
-    this.claimService.getClaimsByStatus().then(res => {
-      FancyGrid.get(this.myGrid['renderTo']).destroy();
-      this.config = this.loadGridConfig(res[0].gridData, this.appCtrl, this.filterService);
+    this.claimService.getClaimsByStatus(this.filterService.filter).then(res => {
+      this.updateDataTableData(res[0].gridData);
       this.loadPieChart(res[0].pieChartData);
-        this.myGrid = new FancyGrid(this.config);
     });
   }
 
-  ngAfterViewInit() {
-    // this.generateClaimTableData();
+  updateDataTableData(tableData){
+    this.myGrid.setOptions({source:{
+      datatype: 'json',
+      datafields: [
+        { name: 'key', type: 'string' },
+        { name: 'claimed', type: 'string' },
+        { name: 'paid', type: 'string' }
+      ],
+      localdata: tableData
+    }});
   }
 
-  ngOnDestroy() {
-    FancyGrid.get(this.myGrid['renderTo']).destroy();
-    this.subscription.unsubscribe();
-  }
+  loadDataTableConfig(tableData){
+    this.source =
+      {
+        datatype: 'json',
+        datafields: [
+          { name: 'key', type: 'string' },
+          { name: 'claimed', type: 'string' },
+          { name: 'paid', type: 'string' }
+        ],
+        localdata: tableData
+      };
 
-  destroyTable(){
-    FancyGrid.get('statusTable').destroy();
-  }
+    this.dataAdapter = new jqx.dataAdapter(this.source);
 
-  private loadGridConfig(gridData, appCtrl, filterService: FilterService) {
-    return {
-      title: 'Claims by status',
-      renderTo: 'statusTable',
-      width: '700',
-      height: '400',
-      selModel: 'cell',
-      trackOver: true,
-      summary: true,
-      events: [{
-        cellclick: function(grid, row){
-          appCtrl.getRootNav().push(ClaimItemsDetailsComponent, {
-            status: row.data.status
-          });
-        }
-      }],
-      data: {
-        fields: ['status', 'claimed', 'paid'],
-        items: gridData
-      },
-      defaults: {
-        type: 'number',
-        width: 100,
-        summary: 'sum'
-      },
-      columns: [{
-        index: 'status',
-        title: 'Status',
-        summary: function(){
-          return '<div style="font-weight: bold;">Total</div>';
-        }
-      }, {
-        index: 'claimed',
-        title: 'Claimed',
-        format: 'number'
-      }, {
-        index: 'paid',
-        title: 'Paid',
-        format: 'number'
-      }]
-    };
+    this.columns =
+      [
+        { text: 'Status', datafield: 'key', width: 200 },
+        { text: 'Claimed', datafield: 'claimed', width: 200 },
+        { text: 'Paid', datafield: 'paid', width: 200 }
+      ];
   }
 
   private loadPieChart(pieChartData) {

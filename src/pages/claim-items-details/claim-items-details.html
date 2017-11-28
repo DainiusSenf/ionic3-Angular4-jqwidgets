@@ -15,10 +15,14 @@
   <app-filter [parentComponent]="CLAIM_DETAILS"></app-filter>
   <ion-grid>
     <ion-row>
-      <jqxGrid #myGrid
-              [width]="1000" [source]="dataAdapter" [columns]="columns"
-              [pageable]="true" [autoheight]="true" [sortable]="true"
-              (onPagechanged)="onPageChanged($event)">
+      <jqxGrid #claimLinesTable
+               [width]="1800" [source]="dataAdapter" [columns]="columns"
+               [pageable]="true"
+               [autoheight]="true"
+               [sortable]="true"
+               [pagesize]="200"
+               (onPagechanged)="onPageChanged($event)"
+                (onSort)="onSort($event)">
       </jqxGrid>
     </ion-row>
   </ion-grid>

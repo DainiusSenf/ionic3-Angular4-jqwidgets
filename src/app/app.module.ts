@@ -4,14 +4,12 @@ import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule } from "ion2-calendar";
-import { CommonModule }   from '@angular/common';
 
 import {MyApp} from './app.component';
 import {HomePage} from '../pages/home/home';
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-import {FancyGridComponent} from '../components/fancy-grid/fancy-grid.component';
 
 import {ChartModule} from 'angular2-highcharts';
 import {HighchartsStatic} from 'angular2-highcharts/dist/HighchartsService';
@@ -31,8 +29,8 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2
 import {FilterService} from "../services/filter.service";
 import {DatePickerModalComponent} from "../components/date-picker-modal/date-picker-modal";
 import {ClaimItemsDetailsComponent} from "../pages/claim-items-details/claim-items-details";
-import {jqxGridComponent} from "../components/angular_jqxgrid";
-
+import {jqxGridComponent} from "../customTypings/angular_jqxgrid";
+import {CurrenciesService} from "../services/currencies.service";
 
 export function highchartsFactory() {
   // Initialize addons.
@@ -46,7 +44,6 @@ export function highchartsFactory() {
   declarations: [
     MyApp,
     HomePage,
-    FancyGridComponent,
     CountryTableComponent,
     StatusTableComponent,
     LogoutComponent,
@@ -62,8 +59,7 @@ export function highchartsFactory() {
     ChartModule,
     AngularMultiSelectModule,
     BrowserAnimationsModule,
-    CalendarModule,
-    CommonModule
+    CalendarModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -81,6 +77,7 @@ export function highchartsFactory() {
     ClaimService,
     FilterService,
     SalesforceAuthenticate,
+    CurrenciesService,
     {
       provide: HighchartsStatic,
       useFactory: highchartsFactory

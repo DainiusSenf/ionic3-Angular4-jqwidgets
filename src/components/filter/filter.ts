@@ -1,10 +1,11 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FilterService} from "../../services/filter.service";
 import {LoadingController, ModalController} from "ionic-angular";
 import {Filter, FilterSettings, FilterValues} from "../../models/filterSettings";
 import {animate, style, transition, trigger} from "@angular/core";
 import {DatePickerModalComponent} from "../date-picker-modal/date-picker-modal";
 import * as moment from 'moment';
+import {CurrenciesService} from "../../services/currencies.service";
 
 @Component({
   selector: 'app-filter',
@@ -25,7 +26,7 @@ import * as moment from 'moment';
     )
   ]
 })
-export class FilterComponent {
+export class FilterComponent implements OnInit{
   @ViewChild('mainRow') mainRow: any;
   @Input() parentComponent : string;
 
@@ -51,18 +52,30 @@ export class FilterComponent {
 
   constructor(public filterService : FilterService,
               public loadingCtrl: LoadingController,
-              public modalCtrl: ModalController) {
+              public modalCtrl: ModalController,
+              public currencyService : CurrenciesService) {
 
     this.showExpandedSearch = false;
     this.showFiltersMobile = false;
     this.filter = new Filter();
     this.filterSettings = new FilterSettings();
-    this.getStatuses(JSON.stringify(this.picklistFilters));
 
   }
 
   ngOnInit() {
     this.isFilterChanged = false;
+    this.getStatuses(JSON.stringify(this.picklistFilters));
+    this.getCurrencies();
+
+  }
+
+  getCurrencies() {
+    this.currencyService.getCurrencies().then(res => {
+      console.log('getCurrencies res');
+      console.log(res);
+
+      this.filterService.filterValues.currencyList = res;
+    });
   }
 
   setDividentPaymentDateRange(data){
@@ -176,12 +189,13 @@ export class FilterComponent {
 
 
   onFilterData(){
-    this.filterService.filter.statuses = this.filterService.filterValues.selectedStatuses.map(function(a) {return a["itemName"];});
-    this.filterService.filter.countries = this.filterService.filterValues.selectedCountries.map(function(a) {return a["itemName"];});;
-    this.filterService.filter.claimTypes = this.filterService.filterValues.selectedClaimTypes.map(function(a) {return a["itemName"];});;
-    this.filterService.filter.beneficialOwners = this.filterService.filterValues.selectedBeneficialOwners.map(function(a) {return a["itemName"];});;
-    this.filterService.filter.portfolios = this.filterService.filterValues.selectedPortfolios.map(function(a) {return a["itemName"];});;
-    this.filterService.filter.currency = this.filterService.filterValues.selectedCurrency;
+    console.log('this.filterService.filterValues.selectedCurrency ');
+    console.log(this.filterService.filterValues.selectedCurrency);
+    this.filterService.filter.statuses = this.filterService.filterValues.selectedStatuses.map(function(a) {return a["itemName"]});
+    this.filterService.filter.countries = this.filterService.filterValues.selectedCountries.map(function(a) {return a["itemName"]});
+    this.filterService.filter.claimTypes = this.filterService.filterValues.selectedClaimTypes.map(function(a) {return a["itemName"]});
+    this.filterService.filter.beneficialOwners = this.filterService.filterValues.selectedBeneficialOwners.map(function(a) {return a["itemName"]});
+    this.filterService.filter.portfolios = this.filterService.filterValues.selectedPortfolios.map(function(a) {return a["itemName"]});
     this.filterService.filter.dividendPaymentDateFrom = this.filterService.filterValues.divPaymentDateRange.from;
     this.filterService.filter.dividendPaymentDateTo= this.filterService.filterValues.divPaymentDateRange.to;
     this.filterService.filter.claimSubmissionDateFrom = this.filterService.filterValues.claimSubmissionDateRange.from;
@@ -192,6 +206,9 @@ export class FilterComponent {
     this.filterService.filter.pageSize = 200;
     this.filterService.filter.orderBy = [];
     this.filterService.filter.orderDirection = '';
+    if(this.filterService.filterValues.selectedCurrency) {
+      this.filterService.filter.currencyCode = this.filterService.filterValues.selectedCurrency[0].itemName;
+    }
 
     this.filterService.filterDataTable(this.parentComponent);
   }

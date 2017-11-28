@@ -18,7 +18,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <!-- cordova.js required for cordova apps (remove if not needed) -->
   <!--<script src="cordova.js"></script>-->
-  <script src="<%= app_directory %>assets/js/fancy.min.js"></script>
   <script type="text/javascript"> if(!window._sf) window._sf = {} </script>
   <% if (local) { %>
   <script type="text/javascript">
@@ -43,11 +42,11 @@
   </script>-->
 
   <link href="<%= app_directory %>build/main.css" rel="stylesheet"/>
-  <link href="<%= app_directory %>assets/css/fancy.min.css" rel="stylesheet"/>
-  <link href="<%= app_directory %>assets/css/jqx.base.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="<%= app_directory %>assets/css/jqx.base.css" type="text/css" />
 
   <c:CT_CTRL_Filtering />
   <c:CT_CTRL_ClaimLines />
+  <c:CT_CTRL_Currencies />
 
 </head>
   <body>

@@ -2,11 +2,10 @@
   <ion-row>
     <ion-col>
       <jqxGrid #countryTable
-               [width]="600" [source]="dataAdapter" [columns]="columns"
-               [pageable]="true" [autoheight]="true" [sortable]="true"
+               [width]="600" [height]="400" [source]="dataAdapter" [columns]="columns"
+               [pageable]="false" [sortable]="true"
                (onRowclick)="onRowClick($event)">
       </jqxGrid>
-      <!--<div id='countryTable'></div>-->
     </ion-col>
     <ion-col>
       <chart id="countryPieChart" [options]="pieChartConfig"></chart>

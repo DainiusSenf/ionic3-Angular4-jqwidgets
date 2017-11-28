@@ -39,16 +39,16 @@ export class ClaimService {
       });
   }
 
-  public getUserClaimsByCountry(): Promise<any> {
-    return this.sfdc.execute('CTRL_WTaxCommunityApp','getUserClaimsByCountry', {})
+  public getClaimsByCountry(filter): Promise<any> {
+    return this.sfdc.execute('CTRL_ClaimLines','getClaimLinesAmountByCountry',{filters: filter})
       .then((res) => {
         return res;
       }, (err) => {
       });
   }
 
-  public getClaimsByStatus(): Promise<any> {
-    return this.sfdc.execute('CTRL_WTaxCommunityApp','getClaimsByStatus', {})
+  public getClaimsByStatus(filter): Promise<any> {
+    return this.sfdc.execute('CTRL_ClaimLines','getClaimLinesAmountByStatus', {filters: filter})
       .then((res) => {
         return res;
       }, (err) => {
